@@ -60,11 +60,21 @@
             <li class="nav-item">
 			      <a class="nav-link active" href="{% url 'login' %}">Вход </a>
           </li>
+          <li class="nav-item">
+			      <a class="nav-link active" href="{% url 'registration' %}">Регистрация </a>
+          </li>
           {% endif %}
           {% if request.user.is_authenticated %}
             <li class="nav-item">
-			      <a class="nav-link active" href="#">Профиль </a>
-          </li>
+              <div class="dropdown">
+                <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Профиль
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="{% url 'logout' %}">Выйти</a>
+                </div>
+              </div>
+            </li>
           {% endif %}
         </ul>
       </div>
