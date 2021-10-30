@@ -2,10 +2,11 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, TemplateView, View
 from django.contrib import messages
+from django.contrib.auth import authenticate, login
 from django.db import transaction
 from .models import Product, Category, Customer, Cart, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
-from .forms import OrderForm
+from .forms import OrderForm, LoginForm
 from .utils import recalc_cart
 
 
@@ -99,6 +100,7 @@ class CartView(CartMixin, View):
 
 class CheckoutView(CartMixin, View):
 
+
     def get(self, request, *args, **kwargs):
         #customer = Customer.objects.get(user=request.user)
         #cart = Cart.objects.get(owner=customer)
@@ -135,4 +137,25 @@ class MakeOrderView(CartMixin, View):
             messages.add_message(request, messages.INFO, 'Заказ успешно оформлен')
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
+
+class LoginView(CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+
+        form = LoginForm(request.POST or None)
+        categories = Category.objects.all()
+        context = {'form' : form, 'categories': categories, 'cart' :self.cart}
+        return render(request, 'login.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = LoginForm(request.POST or None)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password']
+            user = authenticate(username = username, password=password)
+            if user:
+                login(request, user)
+                return HttpResponseRedirect('/')
+            return render('login.html', {'from' : form, 'cart' : self.cart}, context_instance=RequestContext(request))
 
