@@ -157,5 +157,5 @@ class LoginView(CartMixin, View):
             if user:
                 login(request, user)
                 return HttpResponseRedirect('/')
-            return render('login.html', {'from' : form, 'cart' : self.cart}, context_instance=RequestContext(request))
+        return render(request, 'login.html', {'form' : form, 'cart' : self.cart})
 
