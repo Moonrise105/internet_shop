@@ -24,7 +24,7 @@ class Product(models.Model):
     slug = models.SlugField(unique=True)
     image = models.ImageField(verbose_name='Изображение', default='no-image.png')
     description = models.TextField(verbose_name='Описание', null=True)
-    price = models.DecimalField(max_digits=15, decimal_places=3, verbose_name='Цена')
+    price = models.DecimalField(max_digits=15, decimal_places=2, verbose_name='Цена')
     volume = models.CharField(max_length=255, verbose_name='Объем')
 
     def __str__(self):
@@ -59,8 +59,6 @@ class Cart(models.Model):
 
     def __str__(self):
         return str(self.id)
-
-
 
 
 class Customer(models.Model):
