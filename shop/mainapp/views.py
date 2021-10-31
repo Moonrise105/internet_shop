@@ -4,7 +4,7 @@ from django.views.generic import DetailView, TemplateView, View
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.db import transaction
-from .models import Product, Category, Customer, Cart, CartProduct
+from .models import Product, Category, Customer, Order,  Cart, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
 from .forms import OrderForm, LoginForm, RegistrationForm
 from .utils import recalc_cart
@@ -191,6 +191,11 @@ class RegistrationView(CartMixin, View):
             return HttpResponseRedirect('/')
         context = {"form": form, 'cart' : self.cart}
         return render(request, "registration.html", context)
+class OrdersView(CartMixin, View):
 
-        
-
+    def get(self, request, *args, **kwargs):
+        customer = Customer.objects.get(user=request.user)
+        orders = Order.objects.filter(customer=customer).order_by('-created_at')
+        categories = Category.objects.all()
+        context = {'orders' : orders, 'cart' : self.cart, 'categories' : categories}
+        return render(request, 'orders.html', context)
