@@ -12,7 +12,8 @@ from .views import (
     CheckoutView,
     MakeOrderView,
     LoginView,
-    RegistrationView)
+    RegistrationView,
+    OrdersView)
 
 urlpatterns = [
     path('', BaseView.as_view(), name='base'),
@@ -26,5 +27,6 @@ urlpatterns = [
     path('make-order/', MakeOrderView.as_view(), name='make_order'),
     path('login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(next_page="/"), name='logout'),
-    path('registration/', RegistrationView.as_view(), name='registration')
+    path('registration/', RegistrationView.as_view(), name='registration'),
+    path('orders/', OrdersView.as_view(), name='orders')
 ]
