@@ -116,20 +116,20 @@
         {% endif %}
         <div class="row">
           {% for product in products %}
-          <div class="col-lg-4 col-md-6 mb-4">
-            <div class="card h-100">
+          <div class="col-lg-2 col-md-3 mb-2">
+            <div class="card h-100" style="width: 12rem;">
               {% if product.image %}
               <a href="{{ product.get_absolute_url }}"><img class="card-img-top" src="{{ product.image.url }}" alt=""></a>
               {% else %}
               <a href="{{ product.get_absolute_url }}"><img class="card-img-top" src="{% static 'доска.jpg' %}" alt=""></a>
               {% endif %}
               <div class="card-body">
-                <h4 class="card-title">
+                <h5 class="card-title">
                   <a href="{{ product.get_absolute_url }}">{{ product.title }}</a>
-                </h4>
+                </h5>
                 <h5>{{ product.price }} руб.</h5>
                 <a href="{% url 'add_to_cart' slug=product.slug %}">
-                  <button class="btn btn-danger">Добавить в корзину</button>
+                  <button class="btn btn-danger btn-sm">Добавить в корзину</button>
                 </a>
               </div>
             </div>
