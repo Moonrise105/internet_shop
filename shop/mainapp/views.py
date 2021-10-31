@@ -149,7 +149,8 @@ class MakeOrderView(CartMixin, View):
             return HttpResponseRedirect('/')
         return HttpResponseRedirect('/checkout/')
 
-class LoginView(CartMixin, View):
+
+class LoginView(CartMixin,  View):
 
     def get(self, request, *args, **kwargs):
 
@@ -161,6 +162,7 @@ class LoginView(CartMixin, View):
     def post(self, request, *args, **kwargs):
 
         form = LoginForm(request.POST or None)
+        categories = Category.objects.all()
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
@@ -168,8 +170,9 @@ class LoginView(CartMixin, View):
             if user:
                 login(request, user)
                 return HttpResponseRedirect('/')
-        context = {'form' : form, 'cart' : self.cart}
+        context = {'form' : form, 'categories': categories, 'cart' : self.cart}
         return render(request, 'login.html', context)
+
 
 class RegistrationView(CartMixin, View):
 
@@ -183,6 +186,7 @@ class RegistrationView(CartMixin, View):
     def post(self, request, *args, **kwargs):
 
         form = RegistrationForm(request.POST or None)
+        categories = Category.objects.all()
         if form.is_valid():
             new_user = form.save(commit=False)
             new_user.username = form.cleaned_data['username']
@@ -200,7 +204,7 @@ class RegistrationView(CartMixin, View):
             user = authenticate(username=form.cleaned_data['username'], password = form.cleaned_data['password'])
             login(request, user)
             return HttpResponseRedirect('/')
-        context = {"form": form, 'cart' : self.cart}
+        context = {"form": form, 'categories': categories, 'cart' : self.cart}
         return render(request, "registration.html", context)
 class OrdersView(CartMixin, View):
 
