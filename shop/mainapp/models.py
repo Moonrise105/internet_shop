@@ -71,6 +71,11 @@ class Customer(models.Model):
         return self.user.username
 
 
+# class UserSession(models.Model):
+#     user = models.ForeignKey(Customer, null=True)
+#     session =
+
+
 class Order(models.Model):
     STATUS_NEW = 'new'
     STATUS_IN_PROGRESS = 'in_progress'

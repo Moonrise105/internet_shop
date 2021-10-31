@@ -1,3 +1,4 @@
+from django.db.models import Field
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, TemplateView, View
@@ -117,7 +118,12 @@ class MakeOrderView(CartMixin, View):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         form = OrderForm(request.POST or None)
-        customer = Customer.objects.get(user=request.user)
+
+        print(type(request.user))
+        if not request.user.is_anonymous:
+            customer = Customer.objects.get(user=request.user)
+        else:
+            return HttpResponseRedirect('/registration/')
         if form.is_valid():
             new_order = form.save(commit=False)
             new_order.customer = customer
