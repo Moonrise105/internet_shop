@@ -51,13 +51,14 @@ class CategoryDetailView(CartMixin, CategoryDetailMixin, DetailView):
 class AddToCartView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
-        product_slug = kwargs.get('slug')
-        product = Product.objects.get(slug=product_slug)
-        cart_product, created = CartProduct.objects.get_or_create(user=self.cart.owner, cart=self.cart, product=product)
-        if created:
-            self.cart.products.add(cart_product)
-        recalc_cart(self.cart)
-        messages.add_message(request, messages.INFO, "Товар успешно добавлен")
+        if request.user.is_authenticated:
+            product_slug = kwargs.get('slug')
+            product = Product.objects.get(slug=product_slug)
+            cart_product, created = CartProduct.objects.get_or_create(user=self.cart.owner, cart=self.cart, product=product)
+            if created:
+                self.cart.products.add(cart_product)
+            recalc_cart(self.cart)
+            messages.add_message(request, messages.INFO, "Товар успешно добавлен")
         return HttpResponseRedirect('/cart/')
 
 
