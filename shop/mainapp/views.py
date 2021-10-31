@@ -93,6 +93,10 @@ class CartView(CartMixin, View):
     def get(self, request, *args, **kwargs):
         #customer = Customer.objects.get(user=request.user)
         #cart = Cart.objects.get(owner=customer)
+        # if not request.user.is_authenticated:
+            # messages.add_message(request, messages.INFO, "Зарегестрируйтесь")
+            # return HttpResponseRedirect('/')
+
         categories = Category.objects.all()
         context = {'cart': self.cart,
                    'categories': categories}
