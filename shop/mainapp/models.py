@@ -1,8 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.models import ContentType
+from django.db.models.fields.related import OneToOneField
 from django.urls import reverse
 from django.utils import timezone
+from django.dispatch import receiver
+
 
 User = get_user_model()
 
@@ -35,7 +38,7 @@ class Product(models.Model):
 
 
 class CartProduct(models.Model):
-    user = models.ForeignKey('Customer', verbose_name='Покупатель', on_delete=models.CASCADE)
+    user = models.ForeignKey('Customer', null = True ,verbose_name='Покупатель', on_delete=models.CASCADE)
     cart = models.ForeignKey('Cart', verbose_name='Корзина', on_delete=models.CASCADE, related_name='related_products')
     product = models.ForeignKey(Product, verbose_name='Товар', on_delete=models.CASCADE)
     qty = models.PositiveIntegerField(default=1)
@@ -62,13 +65,14 @@ class Cart(models.Model):
 
 
 class Customer(models.Model):
-    user = models.ForeignKey(User, verbose_name='Пользователь', on_delete=models.CASCADE)
+    user = models.OneToOneField(User, verbose_name='Пользователь', on_delete=models.CASCADE)
     phone = models.CharField(max_length=20, verbose_name='Номер телефона', null=True, blank=True)
     address = models.CharField(max_length=255, verbose_name='Адрес', null=True, blank=True)
     orders = models.ManyToManyField('Order', related_name='related_customer', verbose_name='Заказы покупателя')
-
+    favorities = models.ManyToManyField(Product, related_name='related_customer', verbose_name='Избранное')
     def __str__(self):
         return self.user.username
+
 
 
 # class UserSession(models.Model):

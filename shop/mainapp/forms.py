@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Order
+from .models import Customer, Order
 
 
 class OrderForm(forms.ModelForm):
@@ -88,3 +88,31 @@ class RegistrationForm(forms.ModelForm):
         model = User
         fields = ['username', 'password', 'confirm_password', 'first_name',
         'last_name', 'address', 'email', 'phone']
+
+
+class UserForm(forms.ModelForm):
+    phone = forms.CharField(required = False)
+    address = forms.CharField(required = False)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].label = 'Логин'
+        self.fields['phone'].label = 'Номер телефона'
+        self.fields['first_name'].label = 'Имя'
+        self.fields['last_name'].label = 'Фамилия'
+        self.fields['email'].label = 'Эл. почта'
+        self.fields['address'].label = 'Адрес'
+
+
+    def clean(self):
+
+        return self.cleaned_data
+
+    class Meta:
+        model = User
+        fields = ['username','first_name', 'last_name', 'email', 'phone', 'address']
+
+class CustomerForm(forms.ModelForm):
+
+    class Meta:
+        model = Customer
+        fields = ['favorities']

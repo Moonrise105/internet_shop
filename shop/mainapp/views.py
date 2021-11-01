@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login
 from django.db import transaction
 from .models import Product, Category, Customer, Order,  Cart, CartProduct
 from .mixins import CategoryDetailMixin, CartMixin
-from .forms import OrderForm, LoginForm, RegistrationForm
+from .forms import UserForm, CustomerForm, OrderForm, LoginForm, RegistrationForm
 from .utils import recalc_cart
 
 
@@ -206,6 +206,9 @@ class RegistrationView(CartMixin, View):
             return HttpResponseRedirect('/')
         context = {"form": form, 'categories': categories, 'cart' : self.cart}
         return render(request, "registration.html", context)
+
+
+
 class OrdersView(CartMixin, View):
 
     def get(self, request, *args, **kwargs):
@@ -214,3 +217,38 @@ class OrdersView(CartMixin, View):
         categories = Category.objects.all()
         context = {'orders' : orders, 'cart' : self.cart, 'categories' : categories}
         return render(request, 'orders.html', context)
+
+
+class ProfileView(CartMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        customer_form =  CustomerForm(request.POST or None)
+        user_form = UserForm(instance=request.user)
+        customer = Customer.objects.get(user=request.user)
+        categories = Category.objects.all()
+        context = {'cart' : self.cart,
+            'categories' : categories, 
+            'customer' : customer,
+            'customer_form' : customer_form,
+            'user_form' : user_form
+        }
+        return render(request, 'profile.html', context)
+
+    def post(self, request, *args, **kwargs):
+        customer_form =  CustomerForm(request.POST, instance=request.user.customer)
+        user_form = UserForm(request.POST, instance=request.user)
+        customer = Customer.objects.get(user=request.user)
+        categories = Category.objects.all()
+        if user_form.is_valid():
+            user_form.save()
+        context = {'cart' : self.cart,
+            'categories' : categories, 
+            'customer' : customer,
+            'customer_form' : customer_form,
+            'user_form' : user_form
+        }
+        return render(request, 'profile.html', context)
+
+
+
+
